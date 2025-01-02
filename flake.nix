@@ -6,11 +6,8 @@
   };
 
   outputs =
+    { self, nixpkgs }@inputs:
     {
-      self,
-      nixpkgs,
-    }@inputs:
-    {
-
+      lib = import ./lib inputs nixpkgs.lib;
     };
 }

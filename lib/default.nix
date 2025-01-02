@@ -103,7 +103,7 @@ let
               }
             );
 
-          modules = { };
+          modules = lib.r.findModulesV2 (../. + "/modules");
 
           debug = loadFile ./debug.nix;
           merge = loadFile ./merge.nix;
