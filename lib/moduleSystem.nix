@@ -68,7 +68,10 @@ in
             value = dir + "/${name}";
           }
         else
-          { }
+          {
+            inherit name;
+            value = "${name}: is not a nix file";
+          }
       # if it directory
       else if type == "directory" then
         if (builtins.readDir (dir + "/${name}")) ? "default.nix" then
@@ -84,6 +87,9 @@ in
             value = r.findModulesV2 (dir + "/${name}");
           }
       else
-        { }
+        {
+          inherit name;
+          value = "${name}: unknown file type: ${type}";
+        }
     ) (builtins.readDir dir);
 }
