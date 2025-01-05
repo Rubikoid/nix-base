@@ -8,7 +8,7 @@ let
           loadFile =
             file:
             import file {
-              inherit inputs lib;
+              inherit inputs lib loadFile;
               r = self;
             };
         in
@@ -108,11 +108,13 @@ let
           debug = loadFile ./debug.nix;
           merge = loadFile ./merge.nix;
           moduleSystem = loadFile ./moduleSystem.nix;
+          helpers = loadFile ./helpers;
           system = loadFile ./system;
 
           inherit (self.debug) strace straceSeq straceSeqN;
           inherit (self.merge) recursiveMerge mkMergeTopLevel;
           inherit (self.moduleSystem) findModules findModulesV2;
+          inherit (self.helpers) python;
           inherit (self.system)
             # some simple system related things
             supportedSystems
