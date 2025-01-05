@@ -4,9 +4,9 @@
   inputs = { };
 
   outputs =
-    { self, nixpkgs }@inputs:
+    { self, ... }@inputs:
     {
-      lib = import ./lib inputs nixpkgs.lib;
+      lib = import ./lib inputs inputs.nixpkgs.lib;
 
       templates = {
         trivial = {
