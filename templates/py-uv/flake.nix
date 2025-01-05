@@ -3,7 +3,7 @@
     nixpkgs.url = "nixpkgs";
 
     base = {
-      url = "/home/rubikoid/infra/nix/base/"; # "base"; # github:rubikoid/nix-base
+      url = "github:rubikoid/nix-base"; # "base"; # github:rubikoid/nix-base
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
