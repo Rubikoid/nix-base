@@ -5,7 +5,23 @@
 }:
 {
   globalOverrides = [
-    (_final: _prev: { })
+    (
+      _final: _prev:
+      let
+        fixSetupTools =
+          pkgName:
+          _prev.${pkgName}.overrideAttrs (old: {
+            # nativeBuildInputs = old.nativeBuildInputs ++ [ ];
+            buildInputs = (old.buildInputs or [ ]) ++ [ _final.setuptools ];
+          });
+      in
+      {
+        # Implement build fixups here.
+        jsbeautifier = fixSetupTools "jsbeautifier";
+        cssbeautifier = fixSetupTools "cssbeautifier";
+        editorconfig = fixSetupTools "editorconfig";
+      }
+    )
   ];
 
   setupPythonEnvs =
