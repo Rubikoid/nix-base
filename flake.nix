@@ -1,9 +1,7 @@
 {
   description = "Base NixOS config part";
 
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  };
+  inputs = { };
 
   outputs =
     { self, nixpkgs }@inputs:
