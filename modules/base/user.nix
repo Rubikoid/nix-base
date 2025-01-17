@@ -17,7 +17,7 @@
     in
     {
       username = config.user;
-      homeDirectory = "${baseHomePath}/${config.user}";
+      homeDirectory = if (config.user != "root") then "${baseHomePath}/${config.user}" else "/root";
       stateVersion = "24.05";
     };
 }
