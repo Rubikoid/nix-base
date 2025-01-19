@@ -5,6 +5,8 @@ with lib;
 with types;
 {
   options = {
+    rubikoid.secrets.enable = lib.mkEnableOption "secrets thing";
+
     system-arch-name = lib.mkOption { type = types.str; };
 
     device = mkOption { type = str; };
