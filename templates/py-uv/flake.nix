@@ -3,7 +3,8 @@
     nixpkgs.url = "nixpkgs";
 
     base = {
-      url = "github:rubikoid/nix-base"; # "base"; # github:rubikoid/nix-base
+      # url = "github:rubikoid/nix-base"; # "base"; # github:rubikoid/nix-base
+      url = "path:/mnt/c/Dsct/projects/personal/infra/nix/base"; # "base"; # github:rubikoid/nix-base
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -37,34 +38,33 @@
       lib = base.lib.r.extender base.lib (
         { lib, prev, r, prevr }:
         {
-          inherit (r.nixInit nixpkgs) pkgsFor forEachSystem mkSystem;
+          extended = 1;
         }
       );
-
-      pythonOptions = {
-        name = "example";
-        source = ./.;
-
-        sourcePreference = "wheel";
-        python = pkgs: pkgs.python312;
-
-        overrides = _: _: { };
-
-        inherit inputs;
-      };
-
-      pythonGen = pkgs: lib.r.helpers.python.setupPythonEnvs (pythonOptions // { inherit pkgs; });
     in
-    {
-      packages = lib.r.forEachSystem (
-        { system, pkgs }:
-        {
-          default = (pythonGen pkgs).simple.env;
-        }
-      );
-      devShells = lib.r.forEachSystem (
-        { system, pkgs }:
-        {
+    lib.r.mkFlake nixpkgs (
+      { system, pkgs, ... }:
+      let
+        pythonOptions = {
+          name = "example";
+          source = ./.;
+
+          sourcePreference = "wheel";
+          python = pkgs: pkgs.python312;
+
+          overrides = _: _: { };
+
+          inherit inputs pkgs;
+        };
+
+        pythonSetup = lib.r.helpers.python.setupPythonEnvs pythonOptions;
+      in
+      {
+        packages = {
+          default = pythonSetup.simple.env;
+        };
+
+        devShells = {
           # It is of course perfectly OK to keep using an impure virtualenv workflow and only use uv2nix to build packages.
           # This devShell simply adds Python and undoes the dependency leakage done by Nixpkgs Python infrastructure.
           impure = pkgs.mkShell {
@@ -77,26 +77,22 @@
             '';
           };
 
-          default =
-            let
-              pythonSetup = pythonGen pkgs;
-            in
-            pkgs.mkShell {
-              packages =
-                (with pkgs; [
+          default = pkgs.mkShell {
+            packages =
+              (with pkgs; [
 
-                ])
-                ++ pythonSetup.editable.packages;
+              ])
+              ++ pythonSetup.editable.packages;
 
-              nativeBuildInputs = with pkgs; [
+            nativeBuildInputs = with pkgs; [
 
-              ];
+            ];
 
-              shellHook = ''
-                ${pythonSetup.editable.shellHook}
-              '';
-            };
-        }
-      );
-    };
+            shellHook = ''
+              ${pythonSetup.editable.shellHook}
+            '';
+          };
+        };
+      }
+    );
 }
