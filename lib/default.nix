@@ -124,9 +124,10 @@ let
                   }
                 )
               );
-              argExtractor = arg: lib.genAttrs (self.supportedSystems (system: eachSystemArgs.${system}.${arg}));
+              argExtractor = arg: lib.genAttrs self.supportedSystems (system: eachSystemArgs.${system}.${arg});
             in
             {
+              lib = lib_result;
               devShells = argExtractor "devShells";
               packages = argExtractor "packages";
             };
@@ -162,8 +163,6 @@ let
             rawMkSystem
             # to call with nixpkgs, if you want to use another nixpkgs
             nixInit
-            # test
-            getTest
             # exported from nixInit
             pkgsFor
             forEachSystem
