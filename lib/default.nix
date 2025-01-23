@@ -111,6 +111,26 @@ let
           helpers = loadFile ./helpers;
           system = loadFile ./system;
 
+          mkFlake =
+            passingNixpkgs: argFactory:
+            let
+              inherit (self.nixInit passingNixpkgs) pkgsFor forEachSystem mkSystem;
+              eachSystemArgs = forEachSystem (
+                ops:
+                argFactory (
+                  ops
+                  // {
+
+                  }
+                )
+              );
+              argExtractor = arg: lib.genAttrs (self.supportedSystems (system: eachSystemArgs.${system}.${arg}));
+            in
+            {
+              devShells = argExtractor "devShells";
+              packages = argExtractor "packages";
+            };
+
           inherit (self.debug) strace straceSeq straceSeqN;
           inherit (self.merge) recursiveMerge mkMergeTopLevel;
           inherit (self.moduleSystem) findModules findModulesV2;
