@@ -16,11 +16,14 @@ in
     rubikoid.secrets.enable = lib.mkDefault true;
 
     # must have packages
-    environment.systemPackages = with pkgs; [
-      vim
-      git
-      just
-    ];
+    environment.systemPackages = lib.mkIf config.rubikoid.default-packages.enable (
+      with pkgs;
+      [
+        vim
+        git
+        just
+      ]
+    );
 
     networking = {
       hostName = lib.r.strace config.device;

@@ -6,6 +6,7 @@ with types;
 {
   options = {
     rubikoid.secrets.enable = lib.mkEnableOption "secrets thing";
+    rubikoid.default-packages.enable = lib.mkEnableOption "default packages option";
 
     system-arch-name = lib.mkOption { type = types.str; };
 
@@ -71,5 +72,9 @@ with types;
       #   default = config.deviceSpecific.devInfo ? bigScreen;
       # };
     };
+  };
+
+  config = {
+    rubikoid.default-packages.enable = true; # default ;)
   };
 }
