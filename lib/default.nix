@@ -115,15 +115,7 @@ let
             passingNixpkgs: argFactory:
             let
               inherit (self.nixInit passingNixpkgs) pkgsFor forEachSystem mkSystem;
-              eachSystemArgs = forEachSystem (
-                ops:
-                argFactory (
-                  ops
-                  // {
-
-                  }
-                )
-              );
+              eachSystemArgs = forEachSystem (ops: argFactory (ops // { }));
               argExtractor = arg: lib.genAttrs self.supportedSystems (system: eachSystemArgs.${system}.${arg});
             in
             {

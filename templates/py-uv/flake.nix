@@ -27,12 +27,7 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      base,
-      ...
-    }@inputs:
+    { self, nixpkgs, base, ... }@inputs:
     let
       lib = base.lib.r.extender base.lib (
         { lib, prev, r, prevr }:
