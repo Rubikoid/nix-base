@@ -1,6 +1,6 @@
 # Profile for virtual machines on Yandex Cloud, intended for disk images.
 #
-# 
+#
 # base on cloud-yandex.nix from tvix
 
 { config, lib, pkgs, modulesPath, ... }:
@@ -30,24 +30,26 @@ in
 
   options = {
     virtualisation.selectelCloud = {
-      rootPartitionUuid = with lib; mkOption {
-        type = types.str;
-        default = "C55A5EE2-E5FA-485C-B3AE-CC928429AB6B";
+      rootPartitionUuid =
+        with lib;
+        mkOption {
+          type = types.str;
+          default = "C55A5EE2-E5FA-485C-B3AE-CC928429AB6B";
 
-        description = ''
-          UUID to use for the root partition of the disk image. Yandex
-          Cloud requires that root partitions are mounted by UUID.
+          description = ''
+            UUID to use for the root partition of the disk image. Yandex
+            Cloud requires that root partitions are mounted by UUID.
 
-          Most users do not need to set this to a non-default value.
-        '';
-      };
+            Most users do not need to set this to a non-default value.
+          '';
+        };
     };
   };
 
   config = {
     fileSystems."/" = {
       device = "/dev/disk/by-uuid/${lib.toLower cfg.rootPartitionUuid}";
-      label = "cloudimg-rootfs";
+      # label = "cloudimg-rootfs";
       fsType = "ext4";
       autoResize = true;
     };
@@ -91,7 +93,10 @@ in
     systemd.network.enable = true;
     networking.useNetworkd = true;
     networking.useDHCP = true;
-    networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
+    networking.nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+    ];
 
     services.qemuGuest.enable = true;
 
