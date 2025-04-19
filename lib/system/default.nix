@@ -72,22 +72,26 @@ in
       nixpkgs,
       system,
       overlays ? [ ],
+      permittedInsecurePackages ? [
+        "python-2.7.18.8"
+        "python-2.7"
+        "python-2"
+      ],
     }:
     let
       defaultOverlay = import (root + /overlay.nix) inputs;
       pkgsOverlay = import (root + /pkgs.nix) inputs;
     in
     (import nixpkgs {
-      overlays = [
-        pkgsOverlay
-      ] ++ r.overlays ++ overlays;
+      overlays = [ pkgsOverlay ] ++ r.overlays ++ overlays;
       localSystem = {
         inherit system;
       };
       config = {
-        allowUnfree = true;
-        permittedInsecurePackages = [ ];
+        inherit permittedInsecurePackages;
+
         # TODO: make it better
+        allowUnfree = true;
         allowUnfreePredicate = (
           pkg:
           builtins.elem (nixpkgs.lib.getName pkg) [
