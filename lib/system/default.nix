@@ -72,11 +72,11 @@ in
       nixpkgs,
       system,
       overlays ? [ ],
-      permittedInsecurePackages ? [
-        "python-2.7.18.8"
-        "python-2.7"
-        "python-2"
-      ],
+    # permittedInsecurePackages ? [
+    #   "python-2.7.18.8"
+    #   "python-2.7"
+    #   "python-2"
+    # ],
     }:
     let
       defaultOverlay = import (root + /overlay.nix) inputs;
@@ -88,10 +88,11 @@ in
         inherit system;
       };
       config = {
-        inherit permittedInsecurePackages;
+        # inherit permittedInsecurePackages;
 
         # TODO: make it better
         allowUnfree = true;
+        allowInsecurePredicate = pkg: lib.any (param: builtins.match ".*${param}.*" pkg) [ "python2" ];
         allowUnfreePredicate = (
           pkg:
           builtins.elem (nixpkgs.lib.getName pkg) [
