@@ -92,7 +92,7 @@ in
 
         # TODO: make it better
         allowUnfree = true;
-        allowInsecurePredicate = pkg: lib.any (param: builtins.match ".*${param}.*" pkg) [ "python2" ];
+        allowInsecurePredicate = pkg: true; # pkg: lib.any (param: builtins.match ".*${param}.*" pkg) [ "python2" ];
         allowUnfreePredicate = (
           pkg:
           builtins.elem (nixpkgs.lib.getName pkg) [
