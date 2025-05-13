@@ -8,19 +8,24 @@
     (
       _final: _prev:
       let
-        fixSetupTools =
+        fixDeps = 
           pkgName:
+          extraDeps:
           _prev.${pkgName}.overrideAttrs (old: {
             # nativeBuildInputs = old.nativeBuildInputs ++ [ ];
-            buildInputs = (old.buildInputs or [ ]) ++ [ _final.setuptools ];
+            buildInputs = (old.buildInputs or [ ]) ++ extraDeps;
           });
+          
+        fixSetupTools =
+          pkgName:
+          fixDeps pkgName [ _final.setuptools ];
       in
       {
         # Implement build fixups here.
         jsbeautifier = fixSetupTools "jsbeautifier";
         cssbeautifier = fixSetupTools "cssbeautifier";
         editorconfig = fixSetupTools "editorconfig";
-        psycopg2 = fixSetupTools "psycopg2";
+        psycopg2 = fixDeps "psycopg2" [ _final.postgresql ] ;
       }
     )
   ];
