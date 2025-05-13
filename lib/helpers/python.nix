@@ -20,6 +20,7 @@
         jsbeautifier = fixSetupTools "jsbeautifier";
         cssbeautifier = fixSetupTools "cssbeautifier";
         editorconfig = fixSetupTools "editorconfig";
+        psycopg2 = fixSetupTools "psycopg2";
       }
     )
   ];
