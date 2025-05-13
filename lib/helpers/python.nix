@@ -4,7 +4,7 @@
   ...
 }:
 {
-  globalOverrides = [
+  globalOverrides = pkgs: [
     (
       _final: _prev:
       let
@@ -25,7 +25,7 @@
         jsbeautifier = fixSetupTools "jsbeautifier";
         cssbeautifier = fixSetupTools "cssbeautifier";
         editorconfig = fixSetupTools "editorconfig";
-        psycopg2 = fixDeps "psycopg2" [ _final.postgresql ] ;
+        psycopg2 = fixDeps "psycopg2" [ pkgs.postgresql ] ;
       }
     )
   ];
@@ -54,7 +54,7 @@
       workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = cleanSource; };
       overlay = workspace.mkPyprojectOverlay { inherit sourcePreference; };
 
-      pyprojectOverrides = lib.composeManyExtensions (r.helpers.python.globalOverrides ++ [ overrides ]);
+      pyprojectOverrides = lib.composeManyExtensions ((r.helpers.python.globalOverrides pkgs) ++ [ overrides ]);
 
       pythonSet =
         (pkgs.callPackage pyproject-nix.build.packages { python = (python pkgs); }).overrideScope
