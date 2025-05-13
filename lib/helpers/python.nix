@@ -25,7 +25,7 @@
         jsbeautifier = fixSetupTools "jsbeautifier";
         cssbeautifier = fixSetupTools "cssbeautifier";
         editorconfig = fixSetupTools "editorconfig";
-        psycopg2 = fixDeps "psycopg2" [ pkgs.postgresql ] ;
+        psycopg2 = fixDeps "psycopg2" [ _final.setuptools pkgs.postgresql ] ;
       }
     )
   ];
