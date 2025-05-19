@@ -8,24 +8,29 @@
     (
       _final: _prev:
       let
-        fixDeps = 
-          pkgName:
-          extraDeps:
+        fixDeps =
+          pkgName: extraDeps:
           _prev.${pkgName}.overrideAttrs (old: {
             # nativeBuildInputs = old.nativeBuildInputs ++ [ ];
             buildInputs = (old.buildInputs or [ ]) ++ extraDeps;
           });
-          
-        fixSetupTools =
-          pkgName:
-          fixDeps pkgName [ _final.setuptools ];
+
+        fixSetupTools = pkgName: fixDeps pkgName [ _final.setuptools ];
       in
       {
         # Implement build fixups here.
         jsbeautifier = fixSetupTools "jsbeautifier";
         cssbeautifier = fixSetupTools "cssbeautifier";
         editorconfig = fixSetupTools "editorconfig";
-        psycopg2 = fixDeps "psycopg2" [ _final.setuptools pkgs.postgresql ] ;
+        www-authenticate = fixSetupTools "www-authenticate";
+        "ruamel.yaml" = fixSetupTools "ruamel.yaml";
+        "ruamel.yaml.clib" = fixSetupTools "ruamel.yaml.clib";
+        "ruamel-yaml-clib" = fixSetupTools "ruamel-yaml-clib";
+        psycopg2 = fixDeps "psycopg2" [
+          _final.setuptools
+          pkgs.postgresql
+        ];
+        psycopg2-binary = fixDeps "psycopg2-binary" [ _final.setuptools ];
       }
     )
   ];
@@ -54,7 +59,9 @@
       workspace = uv2nix.lib.workspace.loadWorkspace { workspaceRoot = cleanSource; };
       overlay = workspace.mkPyprojectOverlay { inherit sourcePreference; };
 
-      pyprojectOverrides = lib.composeManyExtensions ((r.helpers.python.globalOverrides pkgs) ++ [ overrides ]);
+      pyprojectOverrides = lib.composeManyExtensions (
+        (r.helpers.python.globalOverrides pkgs) ++ [ overrides ]
+      );
 
       pythonSet =
         (pkgs.callPackage pyproject-nix.build.packages { python = (python pkgs); }).overrideScope
