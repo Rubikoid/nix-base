@@ -51,7 +51,7 @@ in
     };
 
     boot = {
-      loader.grub.device = lib.mkIf config.rubikoid.cloud.yandexCloud.disko "/dev/vda";
+      loader.grub.device = lib.mkIf (!config.rubikoid.cloud.yandexCloud.disko) "/dev/vda";
 
       initrd.kernelModules = modules;
       kernelModules = modules;
