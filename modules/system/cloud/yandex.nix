@@ -27,17 +27,20 @@ in
   ];
 
   options = {
-    virtualisation.yandexCloud.rootPartitionUuid = with lib; mkOption {
-      type = types.str;
-      default = "C55A5EE2-E5FA-485C-B3AE-CC928429AB6B";
+    rubikoid.cloud.yandexCloud.disko = lib.mkEnableOption "disko thing..";
+    virtualisation.yandexCloud.rootPartitionUuid =
+      with lib;
+      mkOption {
+        type = types.str;
+        default = "C55A5EE2-E5FA-485C-B3AE-CC928429AB6B";
 
-      description = ''
-        UUID to use for the root partition of the disk image. Yandex
-        Cloud requires that root partitions are mounted by UUID.
+        description = ''
+          UUID to use for the root partition of the disk image. Yandex
+          Cloud requires that root partitions are mounted by UUID.
 
-        Most users do not need to set this to a non-default value.
-      '';
-    };
+          Most users do not need to set this to a non-default value.
+        '';
+      };
   };
 
   config = {
@@ -48,7 +51,7 @@ in
     };
 
     boot = {
-      loader.grub.device = "/dev/vda";
+      loader.grub.device = lib.mkIf config.rubikoid.cloud.yandexCloud.disko "/dev/vda";
 
       initrd.kernelModules = modules;
       kernelModules = modules;

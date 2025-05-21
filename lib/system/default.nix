@@ -126,6 +126,7 @@ in
             info = r.straceSeqN 1 (r.getHostOptions source hostname).config;
           in
           {
+            # ARGS DEFINED HERE
             inherit info passingInputs;
             pkgs = r.rawPkgsFor {
               inherit (passingInputs) nixpkgs;
