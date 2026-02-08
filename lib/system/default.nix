@@ -81,33 +81,46 @@ in
     let
       defaultOverlay = import (root + /overlay.nix) inputs;
       pkgsOverlay = import (root + /pkgs.nix) inputs;
-    in
-    (import nixpkgs {
-      overlays = [ pkgsOverlay ] ++ r.overlays ++ overlays;
-      localSystem = {
-        inherit system;
-      };
-      config = {
-        # inherit permittedInsecurePackages;
+      result = (
+        import nixpkgs {
+          overlays = [ pkgsOverlay ] ++ r.overlays ++ overlays;
+          localSystem = {
+            inherit system;
+          };
+          config = {
+            # inherit permittedInsecurePackages;
 
-        # TODO: make it better
-        allowUnfree = true;
-        allowInsecurePredicate = pkg: true; # pkg: lib.any (param: builtins.match ".*${param}.*" pkg) [ "python2" ];
-        allowUnfreePredicate = (
-          pkg:
-          builtins.elem (nixpkgs.lib.getName pkg) [
-            "code"
-            "obsidian"
-            "nvidia-persistenced"
-            "nvidia-settings"
-            "nvidia-x11"
-            "nvidia-x11-545.29.06-6.1.63"
-            "cudatoolkit"
-            "vmware-workstation-17.0.2"
-          ]
-        );
-      };
-    });
+            # TODO: make it better
+            allowUnfree = true;
+            allowInsecurePredicate = pkg: true; # pkg: lib.any (param: builtins.match ".*${param}.*" pkg) [ "python2" ];
+            allowUnfreePredicate = (
+              pkg:
+              builtins.elem (nixpkgs.lib.getName pkg) [
+                "code"
+                "obsidian"
+                "nvidia-persistenced"
+                "nvidia-settings"
+                "nvidia-x11"
+                "nvidia-x11-545.29.06-6.1.63"
+                "cudatoolkit"
+                "vmware-workstation-17.0.2"
+              ]
+            );
+          };
+        }
+      );
+      # result' = result.extend (
+      #   final: prev: {
+      #     fetchurl =
+      #       args:
+      #       (prev.fetchurl.override {
+      #         inherit (final) cacert; # required to avoid infrec
+      #       })
+      #         (args // { curlOptsList = (args.curlOptsList or [ ]) ++ [ "--tls-max 1.2" ]; });
+      #   }
+      # );
+    in
+    result;
 
   findAllHosts = source: builtins.attrNames (builtins.readDir source);
 
