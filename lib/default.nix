@@ -24,7 +24,8 @@ let
                 name = pathName;
                 value = {
                   sopsFile = basePath + "/${pathName}";
-                } // extraAttrs;
+                }
+                // extraAttrs;
               }) paths
             );
 
@@ -120,8 +121,10 @@ let
             in
             {
               lib = lib_result;
-              devShells = argExtractor "devShells";
+              checks = argExtractor "checks";
               packages = argExtractor "packages";
+              apps = argExtractor "apps";
+              devShells = argExtractor "devShells";
             };
 
           inherit (self.debug) strace straceSeq straceSeqN;
